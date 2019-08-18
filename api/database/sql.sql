@@ -1,0 +1,21 @@
+CREATE DATABASE IF NOT EXISTS db;
+
+USE db;
+
+CREATE TABLE IF NOT EXISTS `user` (
+	id INTEGER AUTO_INCREMENT NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `todo` (
+	id INTEGER NOT NULL AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    priority INTEGER NOT NULL,
+    isDone BOOLEAN NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`user_id`) REFERENCES user(`id`)
+);
