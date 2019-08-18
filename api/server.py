@@ -6,7 +6,7 @@ from database.Database import Database
 
 app = Flask(__name__)
 app.secret_key = "TONTON"
-CORS(app)
+CORS(app, supports_credentials=True)
 api = Api(app)
 
 class Session(Resource):
@@ -49,7 +49,7 @@ class Signup(Resource):
                 session['username'] = username
                 return {'status': True}, 201
             else:
-                return {'status': False, 'message':'user alredy exist'}, 400
+                return {'status': False, 'message':'user alredy exist'}, 200
         else:
             return {'status':False, 'message':'invalid form'}, 400
             
@@ -59,7 +59,7 @@ class Signup(Resource):
         for user in users:
             if user['username'] == username:
                 return True
-        returnFalse
+        return False
 class Logout(Resource):
     def get(self):
         session.pop('logged_in', None)
