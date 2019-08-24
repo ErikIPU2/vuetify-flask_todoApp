@@ -26,7 +26,7 @@
             <v-icon dark>mdi-plus</v-icon>
           </v-btn>
           <div>
-            <Todo
+            <!-- <Todo
               v-for="(todo, key) in todos"
               :key="key"
               :title="todo.title"
@@ -34,7 +34,8 @@
               :id="todo.id"
               creationMode
               :createPostUrl="apiUrl+'/todo'"
-            ></Todo>
+            ></Todo> -->
+            <Todo creationMode v-model="createTodoVisible"/>
           </div>
         </v-container>
       </v-content>
@@ -64,7 +65,9 @@ export default {
         user_id: null
       },
 
-      todos: []
+      todos: [],
+
+      createTodoVisible : true
     };
   },
 

@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+  <v-layout v-if="$attrs.value || showFlag">
     <v-flex>
       <v-card class="white--text my-2" hover v-if="creationMode === ''">
         <v-form ref="form" v-model="formValid">
@@ -11,7 +11,7 @@
               label="Titulo"
             ></v-text-field>
             <v-spacer></v-spacer>
-            <v-btn icon>
+            <v-btn icon @click="close()">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
@@ -66,6 +66,10 @@ export default {
 
   created() {
     this.done = this.isDone;
+
+    if (this.$attrs.value === undefined) {
+      this.showFlag = true
+    }
   },
 
   data() {
@@ -81,6 +85,8 @@ export default {
         description: "",
         priority: 0
       },
+
+      showFlag : false,
 
       createRules: {
         titleRules: [values => !!values || "Você precisa digitar o titulo"],
@@ -110,6 +116,13 @@ export default {
             console.error(res);
           });
       }
+    },
+
+    close() {
+      this.$emit('input', false);
+      this.create.title = '';
+      this.create.description = '';
+      this.create.priority = 0;
     }
   }
 };
