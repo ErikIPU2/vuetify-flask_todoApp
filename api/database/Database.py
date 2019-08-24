@@ -75,6 +75,8 @@ class Database:
         with self.con.cursor() as cursor:
             cursor.execute(sql, user_id)
             data = cursor.fetchall()
+        for item in data:
+            item['isDone'] = True if item['isDone'] else False
         return data
 
     def add_todo(self, title, description, priority, isDone, user_id):
