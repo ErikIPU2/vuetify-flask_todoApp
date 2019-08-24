@@ -129,6 +129,10 @@ export default {
               }
             }
           })
+          .catch(res => {
+            this.errorAlert = true;
+            this.errorAlertMessage = "Erro do servidor"
+          })
           .finally(res => {
             this.cardLoading = false;
           });
@@ -150,6 +154,10 @@ export default {
               this.errorAlert = true;
               this.errorAlertMessage = "Nome de usuario já existe";
             }
+          })
+          .catch(res => {
+            this.errorAlert = true;
+            this.errorAlertMessage = "Erro do servidor"
           })
           .finally(res => {
             this.cardLoading = false;
