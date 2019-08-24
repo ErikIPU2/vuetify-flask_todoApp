@@ -22,20 +22,24 @@
       </v-app-bar>
       <v-content>
         <v-container>
-          <v-btn fab dark large color="accent" fixed right bottom>
+          <v-btn fab dark large color="accent" fixed right bottom @click="createTodoVisible = true">
             <v-icon dark>mdi-plus</v-icon>
           </v-btn>
           <div>
-            <!-- <Todo
+            <Todo
               v-for="(todo, key) in todos"
               :key="key"
               :title="todo.title"
               :description="todo.description"
               :id="todo.id"
+            ></Todo>
+            <v-divider></v-divider>
+            <Todo
               creationMode
+              v-model="createTodoVisible"
               :createPostUrl="apiUrl+'/todo'"
-            ></Todo> -->
-            <Todo creationMode v-model="createTodoVisible"/>
+              @created="loadTodos"
+            />
           </div>
         </v-container>
       </v-content>
@@ -67,7 +71,7 @@ export default {
 
       todos: [],
 
-      createTodoVisible : true
+      createTodoVisible: false
     };
   },
 

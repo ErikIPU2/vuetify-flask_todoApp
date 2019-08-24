@@ -11,7 +11,7 @@
               label="Titulo"
             ></v-text-field>
             <v-spacer></v-spacer>
-            <v-btn icon @click="close()">
+            <v-btn icon @click="close">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
@@ -108,7 +108,8 @@ export default {
           .post(`${this.createPostUrl}`, bodyForm, { withCredentials: true })
           .then(res => {
             if (res.data.status) {
-              console.log(res);
+              this.$emit('created')
+              this.close()
             }
           })
           .catch(res => {
