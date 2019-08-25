@@ -10,7 +10,7 @@
       </v-content>
     </v-app>
     <v-app v-else>
-      <v-app-bar color="primary" class="white--text" app>
+      <v-app-bar color="primary" class="white--text" app hide-on-scroll>
         <v-toolbar-title>Lista de tarefas</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn @click="loadTodos" icon class="white--text">
