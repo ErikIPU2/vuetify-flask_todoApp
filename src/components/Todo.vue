@@ -34,11 +34,11 @@
               <v-radio v-for="n in 3" :key="n" :label="prioritysName[n-1]"></v-radio>
             </v-radio-group>
             <v-spacer></v-spacer>
-            <v-btn @click="createTodo" color="secondary">Criar Tarefa</v-btn>
+            <v-btn @click="createTodo" :color="color">Criar Tarefa</v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
-      <v-card color="primary" class="white--text my-2" hover v-else>
+      <v-card :color="color" class="white--text my-2" hover v-else>
         <v-card-title>
           <span>{{ title }}</span>
           <v-spacer></v-spacer>
@@ -61,7 +61,8 @@ export default {
     "id",
     "isDone",
     "creationMode",
-    "createPostUrl"
+    "createPostUrl",
+    "color"
   ],
 
   created() {

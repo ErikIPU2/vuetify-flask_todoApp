@@ -22,7 +22,7 @@
       </v-app-bar>
       <v-content>
         <v-container>
-          <v-btn fab dark large color="accent" fixed right bottom @click="createTodoVisible = true">
+          <v-btn fab dark large color="accent" fixed right bottom @click="openTodoCreate">
             <v-icon dark>mdi-plus</v-icon>
           </v-btn>
           <div>
@@ -32,14 +32,18 @@
               :title="todo.title"
               :description="todo.description"
               :id="todo.id"
+              color="secondary"
             ></Todo>
             <v-divider></v-divider>
-            <Todo
-              creationMode
-              v-model="createTodoVisible"
-              :createPostUrl="apiUrl+'/todo'"
-              @created="loadTodos"
-            />
+            <transition name="fade">
+              <Todo
+                creationMode
+                v-model="createTodoVisible"
+                :createPostUrl="apiUrl+'/todo'"
+                @created="loadTodos"
+                color="secondary"
+              />
+            </transition>
           </div>
         </v-container>
       </v-content>
@@ -112,6 +116,11 @@ export default {
           this.todos = res.data.data;
         }
       });
+    },
+
+    openTodoCreate() {
+      this.createTodoVisible = true;
+      window.scrollTo(0, document.body.scrollHeight);
     }
   }
 };
