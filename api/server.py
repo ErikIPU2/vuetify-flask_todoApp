@@ -71,17 +71,21 @@ class Logout(Resource):
 
 class Todo(Resource):
     def post(self):
-        title = request.form['title']
-        description = request.form['description']
-        priority = request.form['priority']
-        isDone = False
-        user_id = session['id']
+        if 'logged_in' in session:
+            title = request.form['title']
+            description = request.form['description']
+            priority = request.form['priority']
+            isDone = False
+            user_id = session['id']
 
-        if title and description and priority:
-            Database().add_todo(title, description, priority, isDone, user_id)
-            return {'status': True}
+            if title and description and priority:
+                Database().add_todo(title, description, priority, isDone, user_id)
+                return {'status': True}
+            else:
+                return {'status': False, 'message': 'Invalid Form'}, 400
         else:
-            return {'status': False, 'message': 'Invalid Form'}, 400
+            return {'status': False, 'message':'Not logged'}
+            
 
     def get(self):
         if 'logged_in' in session:
@@ -89,6 +93,27 @@ class Todo(Resource):
             return {'status': True, 'data': todos}
         else:
             return {'status': False, 'message':'Not logged'}
+
+    def put(self):
+        if 'logged_in' in session:
+            title = request.form['title']
+            description = request.form['description']
+            priority = request.form['priority']
+            isDone = request.form['isDone']
+            id = request.form['id']
+
+            print(request.form)
+
+            if title and description and priority and isDone:
+                Database().update_todo(title, description, priority, isDone, id)
+                return {'status': True}
+            else:
+                return {'status': False, 'message': 'Invalid Form'}, 400
+        else:
+            return {'status': False, 'message':'Not logged'}
+
+
+
 
 
 api.add_resource(Session, '/api/session')

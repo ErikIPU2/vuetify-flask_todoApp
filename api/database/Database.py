@@ -88,4 +88,14 @@ class Database:
         self.con.commit()
         return id
 
+    def update_todo(self, title, description, priority, isDone, id):
+        isDone = "1" if isDone == 'true' else "0"
+        sql = "UPDATE todo\
+            SET title=%s, description=%s, priority=%s, isDone=%s\
+            WHERE id=%s"
+        with self.con.cursor() as cursor:
+            cursor.execute(sql, (title, description, priority, isDone, id))
+        self.con.commit()
+        return
+
 
