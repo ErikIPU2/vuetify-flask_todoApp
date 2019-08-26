@@ -27,8 +27,8 @@
           </v-btn>
           <div>
             <Todo
-              v-for="(todo, key) in todos"
-              :key="key"
+              v-for="todo in sortTodos"
+              :key="todo.id"
               :title="todo.title"
               :description="todo.description"
               :id="todo.id"
@@ -36,6 +36,7 @@
               :isDone="todo.isDone"
               :updateDoneUrl="apiUrl+'/todo'"
               color="secondary"
+              @update="loadTodos"
             ></Todo>
             <v-divider></v-divider>
             <transition name="fade">
@@ -78,6 +79,8 @@ export default {
 
       todos: [],
 
+      multiplier: 1,
+
       createTodoVisible: false
     };
   },
@@ -114,9 +117,10 @@ export default {
     },
 
     loadTodos() {
+      this.multiplier += 10;
       axios.get(`${this.apiUrl}/todo`, { withCredentials: true }).then(res => {
         if (res.data.status) {
-          this.todos = this.sortTodos(res.data.data)
+          this.todos = res.data.data
         }
       });
     },
@@ -124,9 +128,12 @@ export default {
     openTodoCreate() {
       this.createTodoVisible = true;
       window.scrollTo(0, document.body.scrollHeight);
-    },
+    }
+  },
 
-    sortTodos(todos) {
+  computed: {
+    sortTodos() {
+      const todos = this.todos;
       let notDoneTodo = [];
       let doneTodo = [];
       for (let todo of todos) {
