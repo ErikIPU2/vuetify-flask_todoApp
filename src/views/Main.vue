@@ -116,7 +116,7 @@ export default {
     loadTodos() {
       axios.get(`${this.apiUrl}/todo`, { withCredentials: true }).then(res => {
         if (res.data.status) {
-          this.todos = res.data.data;
+          this.todos = this.sortTodos(res.data.data)
         }
       });
     },
@@ -124,6 +124,30 @@ export default {
     openTodoCreate() {
       this.createTodoVisible = true;
       window.scrollTo(0, document.body.scrollHeight);
+    },
+
+    sortTodos(todos) {
+      let notDoneTodo = [];
+      let doneTodo = [];
+      for (let todo of todos) {
+        if (todo.isDone) {
+          doneTodo.push(todo)
+        } else {
+          notDoneTodo.push(todo)
+        }
+      }
+
+      notDoneTodo.sort((a, b) => {
+        if (a.priority > b.priority) {
+          return -1;
+        } else if (a.priority < b.priority) {
+          return 1;
+        } else {
+          return 0;
+        }
+      })
+
+      return notDoneTodo.concat(doneTodo);
     }
   }
 };
