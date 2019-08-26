@@ -42,7 +42,7 @@
         <v-card-title>
           <span>{{ title }}</span>
           <v-spacer></v-spacer>
-          <v-checkbox color="accent" v-model="done"></v-checkbox>
+          <v-checkbox color="accent" v-model="done" @change="updateTodo"></v-checkbox>
         </v-card-title>
         <v-card-text class="white--text">{{ description }}</v-card-text>
       </v-card>
@@ -59,9 +59,11 @@ export default {
     "title",
     "description",
     "id",
+    "priority",
     "isDone",
     "creationMode",
     "createPostUrl",
+    "updateDoneUrl",
     "color"
   ],
 
@@ -69,7 +71,7 @@ export default {
     this.done = this.isDone;
 
     if (this.$attrs.value === undefined) {
-      this.showFlag = true
+      this.showFlag = true;
     }
   },
 
@@ -87,7 +89,7 @@ export default {
         priority: 0
       },
 
-      showFlag : false,
+      showFlag: false,
 
       createRules: {
         titleRules: [values => !!values || "Você precisa digitar o titulo"],
@@ -109,8 +111,8 @@ export default {
           .post(`${this.createPostUrl}`, bodyForm, { withCredentials: true })
           .then(res => {
             if (res.data.status) {
-              this.$emit('created')
-              this.close()
+              this.$emit("created");
+              this.close();
             }
           })
           .catch(res => {
@@ -120,10 +122,28 @@ export default {
       }
     },
 
+    updateTodo() {
+      const bodyForm = new FormData();
+      bodyForm.set("title", this.title);
+      bodyForm.set("description", this.description);
+      bodyForm.set("priority", this.priority);
+      bodyForm.set("isDone", this.done);
+      bodyForm.set("id", this.id);
+      axios
+        .put(`${this.updateDoneUrl}`, bodyForm, { withCredentials: true })
+        .then(res => {
+          this.$emit("update")
+        })
+        .catch(res => {
+          alert("Ocorreu algum erro");
+          console.error(res);
+        });
+    },
+
     close() {
-      this.$emit('input', false);
-      this.create.title = '';
-      this.create.description = '';
+      this.$emit("input", false);
+      this.create.title = "";
+      this.create.description = "";
       this.create.priority = 0;
     }
   }

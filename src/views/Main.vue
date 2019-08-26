@@ -32,6 +32,9 @@
               :title="todo.title"
               :description="todo.description"
               :id="todo.id"
+              :priority="todo.priority"
+              :isDone="todo.isDone"
+              :updateDoneUrl="apiUrl+'/todo'"
               color="secondary"
             ></Todo>
             <v-divider></v-divider>
