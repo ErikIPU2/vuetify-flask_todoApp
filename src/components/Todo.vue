@@ -1,7 +1,7 @@
 <template>
   <v-layout v-if="$attrs.value || showFlag">
     <v-flex>
-      <v-card class="white--text my-2" hover v-if="creationMode === ''">
+      <v-card class="white--text my-2" hover v-if="creationMode === '' || editMode">
         <v-form ref="form" v-model="formValid">
           <v-card-title>
             <v-text-field
@@ -11,7 +11,7 @@
               label="Titulo"
             ></v-text-field>
             <v-spacer></v-spacer>
-            <v-btn icon @click="close">
+            <v-btn icon @click="(editMode) ? closeEditMode():close()">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
@@ -34,14 +34,21 @@
               <v-radio v-for="n in 3" :key="n" :label="prioritysName[n-1]"></v-radio>
             </v-radio-group>
             <v-spacer></v-spacer>
-            <v-btn @click="createTodo" :color="color">Criar Tarefa</v-btn>
+            <v-btn
+              @click="(editMode) ? updateTodo():createTodo()"
+              :color="color"
+            >{{ (editMode) ? "Editar tarefa":"Criar" }}</v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
+
       <v-card :color="color" class="white--text my-2" hover v-else>
         <v-card-title>
           <span>{{ title }}</span>
           <v-spacer></v-spacer>
+          <v-btn icon @click="setEditMode">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
           <v-checkbox color="accent" v-model="done" @change="updateTodo"></v-checkbox>
         </v-card-title>
         <v-card-text class="white--text">{{ description }}</v-card-text>
@@ -82,6 +89,8 @@ export default {
       formValid: true,
 
       prioritysName: ["baixa", "media", "alta"],
+
+      editMode: false,
 
       create: {
         title: "",
@@ -124,15 +133,24 @@ export default {
 
     updateTodo() {
       const bodyForm = new FormData();
-      bodyForm.set("title", this.title);
-      bodyForm.set("description", this.description);
-      bodyForm.set("priority", this.priority);
-      bodyForm.set("isDone", this.done);
-      bodyForm.set("id", this.id);
+      if (this.editMode) {
+        bodyForm.set("title", this.create.title);
+        bodyForm.set("description", this.create.description);
+        bodyForm.set("priority", this.create.priority);
+        bodyForm.set("isDone", this.done);
+        bodyForm.set("id", this.id);
+        this.closeEditMode();
+      } else {
+        bodyForm.set("title", this.title);
+        bodyForm.set("description", this.description);
+        bodyForm.set("priority", this.priority);
+        bodyForm.set("isDone", this.done);
+        bodyForm.set("id", this.id);
+      }
       axios
         .put(`${this.updateDoneUrl}`, bodyForm, { withCredentials: true })
         .then(res => {
-          this.$emit("update")
+          this.$emit("update");
         })
         .catch(res => {
           alert("Ocorreu algum erro");
@@ -145,6 +163,18 @@ export default {
       this.create.title = "";
       this.create.description = "";
       this.create.priority = 0;
+    },
+
+    setEditMode() {
+      console.log("aa");
+      this.editMode = true;
+      this.create.title = this.title;
+      this.create.description = this.description;
+      this.create.priority = this.priority;
+    },
+
+    closeEditMode() {
+      this.editMode = false;
     }
   }
 };
