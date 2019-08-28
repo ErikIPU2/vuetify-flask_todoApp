@@ -1,7 +1,7 @@
 <template>
   <v-layout v-if="$attrs.value || showFlag">
     <v-flex>
-      <v-card class="white--text my-2" hover v-if="creationMode === '' || editMode">
+      <v-card class="white--text my-2" hover v-if="creationMode || editMode">
         <v-form ref="form" v-model="formValid">
           <v-card-title>
             <v-text-field
@@ -78,18 +78,18 @@ import axios from "axios";
 
 export default {
   name: "Todo",
-  props: [
-    "title",
-    "description",
-    "id",
-    "priority",
-    "isDone",
-    "creationMode",
-    "createPostUrl",
-    "updateDoneUrl",
-    "deleteUrl",
-    "color"
-  ],
+  props: {
+    "title": String,
+    "description": String,
+    "id": Number,
+    "priority": Number,
+    "isDone": Boolean,
+    "creationMode": Boolean,
+    "createPostUrl": String,
+    "updateDoneUrl": String,
+    "deleteUrl": String,
+    "color": String
+  },
 
   created() {
     this.done = this.isDone;
