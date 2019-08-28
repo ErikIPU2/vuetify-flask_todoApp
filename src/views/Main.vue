@@ -35,6 +35,7 @@
               :priority="todo.priority"
               :isDone="todo.isDone"
               :updateDoneUrl="apiUrl+'/todo'"
+              :deleteUrl="apiUrl+'/todo'"
               color="secondary"
               @update="loadTodos"
             ></Todo>

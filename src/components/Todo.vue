@@ -14,6 +14,9 @@
             <v-btn icon @click="(editMode) ? closeEditMode():close()">
               <v-icon>mdi-close</v-icon>
             </v-btn>
+            <v-btn icon v-if="editMode" color="error" @click="deleteConfirmDialog = true">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
           </v-card-title>
           <v-card-text>
             <v-textarea
@@ -53,6 +56,19 @@
         </v-card-title>
         <v-card-text class="white--text">{{ description }}</v-card-text>
       </v-card>
+      <v-dialog v-model="deleteConfirmDialog" max-width="500px" transition="dialog-transition">
+        <v-card>
+          <v-card-title primary-title>Tem certeza?</v-card-title>
+          <v-card-text>
+            Essa ação não poderá ser desfeita
+          </v-card-text>
+          <v-card-actions>
+            <v-btn text color="success" @click="deleteTodo">Sim</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn text color="error" @click="deleteConfirmDialog = false">Não</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-flex>
   </v-layout>
 </template>
@@ -71,6 +87,7 @@ export default {
     "creationMode",
     "createPostUrl",
     "updateDoneUrl",
+    "deleteUrl",
     "color"
   ],
 
@@ -91,6 +108,8 @@ export default {
       prioritysName: ["baixa", "media", "alta"],
 
       editMode: false,
+
+      deleteConfirmDialog: false,
 
       create: {
         title: "",
@@ -158,6 +177,23 @@ export default {
         });
     },
 
+    deleteTodo() {
+      const bodyForm = new FormData();
+      bodyForm.set("id", this.id);
+      axios
+        .delete(`${this.updateDoneUrl}`, {
+          withCredentials: true,
+          data: bodyForm
+        })
+        .then(res => {
+          this.deleteConfirmDialog = false;
+          this.$emit("update");
+        })
+        .catch(res => {
+          console.error(res);
+        });
+    },
+
     close() {
       this.$emit("input", false);
       this.create.title = "";
@@ -166,7 +202,6 @@ export default {
     },
 
     setEditMode() {
-      console.log("aa");
       this.editMode = true;
       this.create.title = this.title;
       this.create.description = this.description;
