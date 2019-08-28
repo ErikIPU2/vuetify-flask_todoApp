@@ -3,7 +3,20 @@ import sys
 
 class Database:
 
+    __instance = None
+
+    @staticmethod
+    def get_instance():
+        if Database.__instance == None:
+            Database()
+        return Database.__instance
+
     def __init__(self):
+        if Database.__instance != None:
+            raise Exception("Essa classe é um singleton")
+        else:
+            Database.__instance = self
+
         host = "127.0.0.1"
         user = "root"
         password = "password"

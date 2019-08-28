@@ -9,6 +9,8 @@ app.secret_key = "TONTON"
 CORS(app, supports_credentials=True)
 api = Api(app)
 
+database = Database.get_instance()
+
 class Session(Resource):
     def get(self):
         if 'logged_in' in session:
@@ -24,7 +26,7 @@ class Login(Resource):
         password = request.form['password']
 
         if username and password:
-            user = Database().get_user(username, password)
+            user = database.get_user(username, password)
             if user:
                 session['logged_in'] = True
                 session['id'] = user['id']
@@ -43,7 +45,7 @@ class Signup(Resource):
 
         if username and password:
             if not self.check_duplicate_user(username):
-                id = Database().add_user(username, password)
+                id = database.add_user(username, password)
                 session['logged_in'] = True
                 session['id'] = id
                 session['username'] = username
@@ -55,7 +57,7 @@ class Signup(Resource):
             
     
     def check_duplicate_user(self, username):
-        users = Database().get_users()
+        users = database.get_users()
         for user in users:
             if user['username'] == username:
                 return True
@@ -79,7 +81,7 @@ class Todo(Resource):
             user_id = session['id']
 
             if title and description and priority:
-                Database().add_todo(title, description, priority, isDone, user_id)
+                database.add_todo(title, description, priority, isDone, user_id)
                 return {'status': True}
             else:
                 return {'status': False, 'message': 'Invalid Form'}, 400
@@ -89,7 +91,7 @@ class Todo(Resource):
 
     def get(self):
         if 'logged_in' in session:
-            todos = Database().get_todos(session['id'])
+            todos = database.get_todos(session['id'])
             return {'status': True, 'data': todos}
         else:
             return {'status': False, 'message':'Not logged'}
@@ -103,7 +105,7 @@ class Todo(Resource):
             id = request.form['id']
 
             if title and description and priority and isDone:
-                Database().update_todo(title, description, priority, isDone, id)
+                database.update_todo(title, description, priority, isDone, id)
                 return {'status': True}
             else:
                 return {'status': False, 'message': 'Invalid Form'}, 400
@@ -115,7 +117,7 @@ class Todo(Resource):
             id = request.form['id']
 
             if id:
-                Database().delete_todo(id)
+                database.delete_todo(id)
                 return {'status': True}
             else:
                 return {'status': False, 'message': 'Invalid Form'}, 400
