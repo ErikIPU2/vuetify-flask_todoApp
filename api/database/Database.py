@@ -98,4 +98,11 @@ class Database:
         self.con.commit()
         return
 
+    def delete_todo(self, id):
+        sql = "DELETE FROM todo WHERE id=%s"
+        with self.con.cursor() as cursor:
+            cursor.execute(sql, id)
+        self.con.commit()
+        return
+
 

@@ -102,8 +102,6 @@ class Todo(Resource):
             isDone = request.form['isDone']
             id = request.form['id']
 
-            print(request.form)
-
             if title and description and priority and isDone:
                 Database().update_todo(title, description, priority, isDone, id)
                 return {'status': True}
@@ -112,7 +110,17 @@ class Todo(Resource):
         else:
             return {'status': False, 'message':'Not logged'}
 
+    def delete(self):
+        if 'logged_in' in session:
+            id = request.form['id']
 
+            if id:
+                Database().delete_todo(id)
+                return {'status': True}
+            else:
+                return {'status': False, 'message': 'Invalid Form'}, 400
+        else:
+            return {'status': False, 'message':'Not logged'}
 
 
 
